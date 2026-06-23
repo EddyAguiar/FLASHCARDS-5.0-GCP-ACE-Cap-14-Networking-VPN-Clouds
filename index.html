@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <title>ACE • Capítulo 14 - VPC & VPN | Flashcards</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: 'Segoe UI', Roboto, system-ui, -apple-system, sans-serif;
+      background: #f2f5f9;
+      padding: 16px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .app-container {
+      max-width: 820px;
+      width: 100%;
+      background: white;
+      border-radius: 36px;
+      box-shadow: 0 12px 40px rgba(0,20,50,0.12);
+      padding: 20px 18px 30px;
+      transition: all 0.2s;
+    }
+    h1 {
+      font-size: 1.9rem;
+      font-weight: 600;
+      color: #0b2b4a;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      border-bottom: 2px solid #e8edf5;
+      padding-bottom: 14px;
+      margin-bottom: 20px;
+    }
+    h1 small {
+      font-size: 1rem;
+      font-weight: 400;
+      color: #3a6a8b;
+      margin-left: auto;
+      background: #eef4fc;
+      padding: 4px 14px;
+      border-radius: 30px;
+    }
+    .badge-gcp {
+      background: #1a73e8;
+      color: white;
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 4px 12px;
+      border-radius: 30px;
+      letter-spacing: 0.3px;
+    }
+    .lang-toggle {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+    }
+    .lang-btn {
+      background: #eef2f7;
+      border: none;
+      padding: 6px 18px;
+      border-radius: 40px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: #1a3a5a;
+      cursor: pointer;
+      transition: 0.15s;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+    }
+    .lang-btn.active {
+      background: #1a73e8;
+      color: white;
+      box-shadow: 0 4px 8px rgba(26,115,232,0.25);
+    }
+    .card-container {
+      background: #ffffff;
+      border-radius: 28px;
+      padding: 16px 14px 20px;
+      box-shadow: inset 0 1px 4px rgba(0,0,0,0.02);
+    }
+    .flashcard {
+      background: #fafcff;
+      border-radius: 28px;
+      padding: 28px 18px 30px;
+      box-shadow: 0 6px 18px rgba(0, 20, 40, 0.06);
+      border: 1px solid #eef3fa;
+      min-height: 260px;
+      display: flex;
+      flex-direction: column;
+      transition: 0.2s;
+    }
+    .card-question {
+      font-size: 1.4rem;
+      font-weight: 500;
+      color: #0d2f4a;
+      line-height: 1.5;
+      margin-bottom: 20px;
+      word-break: break-word;
+    }
+    .card-answer {
+      font-size: 1.1rem;
+      color: #1b3b5a;
+      background: #e8f0fe;
+      padding: 18px 16px;
+      border-radius: 20px;
+      border-left: 5px solid #1a73e8;
+      line-height: 1.6;
+      margin: 12px 0 8px;
+      word-break: break-word;
+    }
+    .card-tip {
+      background: #f1f7fe;
+      border-radius: 18px;
+      padding: 14px 16px;
+      margin: 12px 0 6px;
+      font-size: 0.95rem;
+      border: 1px dashed #8bb3e0;
+      color: #10436b;
+    }
+    .card-tip strong {
+      color: #0b2b4a;
+    }
+    .action-row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 18px;
+      gap: 10px;
+    }
+    .btn-group {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .btn {
+      background: white;
+      border: 1px solid #d4deec;
+      padding: 10px 22px;
+      border-radius: 50px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      color: #1d3d5e;
+      cursor: pointer;
+      transition: all 0.12s;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn-primary {
+      background: #1a73e8;
+      border: 1px solid #1a73e8;
+      color: white;
+      box-shadow: 0 4px 10px rgba(26,115,232,0.25);
+    }
+    .btn-primary:hover {
+      background: #1558b0;
+      transform: scale(0.97);
+    }
+    .btn-outline {
+      background: transparent;
+      border: 1px solid #c8d6e8;
+    }
+    .btn-outline:hover {
+      background: #e3ebf6;
+    }
+    .counter {
+      font-size: 0.95rem;
+      color: #3a5b78;
+      background: #f0f4fa;
+      padding: 6px 18px;
+      border-radius: 40px;
+      font-weight: 500;
+    }
+    .progress-bar {
+      width: 100%;
+      height: 6px;
+      background: #dde6f0;
+      border-radius: 10px;
+      margin: 16px 0 10px;
+    }
+    .progress-fill {
+      height: 6px;
+      background: #1a73e8;
+      border-radius: 10px;
+      width: 0%;
+      transition: width 0.2s;
+    }
+    .footer-info {
+      margin-top: 30px;
+      font-size: 0.85rem;
+      color: #3e5f7a;
+      background: #f4f8ff;
+      padding: 18px 16px;
+      border-radius: 28px;
+      border: 1px solid #e1eaf5;
+    }
+    .gcloud-tip {
+      background: #e5edf9;
+      border-radius: 16px;
+      padding: 12px 14px;
+      margin: 12px 0 4px;
+      font-family: 'SF Mono', 'Cascadia Code', monospace;
+      font-size: 0.9rem;
+      border-left: 3px solid #0b5e9e;
+      color: #003b6a;
+      word-break: break-word;
+    }
+    @media (max-width: 550px) {
+      .app-container { padding: 12px; }
+      h1 { font-size: 1.5rem; }
+      .card-question { font-size: 1.2rem; }
+      .btn { padding: 8px 14px; font-size: 0.9rem; }
+      .lang-btn { padding: 4px 12px; font-size: 0.8rem; }
+    }
+    .badge-icon {
+      background: #d2e3fc;
+      border-radius: 40px;
+      padding: 2px 14px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #0f3b66;
+    }
+    footer {
+      margin-top: 36px;
+      text-align: center;
+      color: #5b6f82;
+      font-size: 0.9rem;
+      padding: 12px 0 8px;
+      border-top: 1px solid #dde6f0;
+      width: 100%;
+      max-width: 820px;
+    }
+    footer a {
+      color: #1a5f9e;
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .copyright {
+      color: #4f6a84;
+    }
+    .real-world-example {
+      background: #e8f3e8;
+      border-radius: 18px;
+      padding: 14px 16px;
+      margin: 12px 0 6px;
+      border-left: 4px solid #1e8e3e;
+      font-size: 0.95rem;
+      color: #14522b;
+    }
+    .real-world-example strong {
+      color: #0a3d1a;
+    }
+    .score-section {
+      background: #f0f7ff;
+      border-radius: 24px;
+      padding: 18px 20px;
+      margin-top: 24px;
+      border: 2px solid #cfe2f8;
+      display: none;
+    }
+    .score-section.visible {
+      display: block;
+    }
+    .score-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+    .score-number {
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: #1a73e8;
+    }
+    .score-label {
+      font-weight: 600;
+      color: #0b2b4a;
+    }
+    .study-tips {
+      background: #fafcff;
+      border-radius: 16px;
+      padding: 14px 16px;
+      border: 1px solid #dce6f2;
+      margin-top: 10px;
+    }
+    .study-tips h4 {
+      color: #0b2b4a;
+      margin-bottom: 8px;
+      font-size: 1rem;
+    }
+    .study-tips ul {
+      list-style: none;
+      padding: 0;
+    }
+    .study-tips li {
+      padding: 4px 0;
+      font-size: 0.95rem;
+      color: #1f4970;
+      border-bottom: 1px solid #edf3fa;
+    }
+    .study-tips li:last-child {
+      border-bottom: none;
+    }
+    .study-tips li::before {
+      content: "📌 ";
+      font-weight: 600;
+    }
+    .reset-score-btn {
+      background: #e8f0fe;
+      border: 1px solid #b8cfe8;
+      padding: 6px 18px;
+      border-radius: 40px;
+      font-weight: 500;
+      cursor: pointer;
+      color: #1a4d7a;
+    }
+    .reset-score-btn:hover {
+      background: #d4e2f8;
+    }
+  </style>
+</head>
+<body>
+<div class="app-container">
+  <header style="display:flex; justify-content: space-between; align-items: center; flex-wrap: wrap; margin-bottom: 6px;">
+    <h1 style="border: none; padding-bottom: 4px; margin-bottom: 2px;">
+      <span>🌐 ACE • Capítulo 14</span>
+      <span class="badge-gcp">VPC & VPN</span>
+    </h1>
+    <div style="display: flex; gap: 6px; align-items: center;">
+      <span class="badge-icon">Networking</span>
+    </div>
+  </header>
+
+  <div class="lang-toggle">
+    <button class="lang-btn active" data-lang="pt" id="langPt">🇧🇷 Português</button>
+    <button class="lang-btn" data-lang="en" id="langEn">🇺🇸 English</button>
+  </div>
+
+  <div class="card-container">
+    <div class="flashcard" id="flashcard">
+      <div class="card-question" id="questionText">Carregando questão...</div>
+      <div class="card-answer" id="answerText" style="display: none;"></div>
+      <div id="extraContent"></div>
+      <div class="action-row">
+        <div class="btn-group">
+          <button class="btn btn-outline" id="showAnswerBtn">🔍 Ver Resposta</button>
+          <button class="btn btn-outline" id="nextBtn">▶ Próximo</button>
+          <button class="btn btn-outline" id="prevBtn">◀ Anterior</button>
+        </div>
+        <span class="counter" id="counter">1 / 20</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:5%"></div></div>
+    </div>
+
+    <!-- área de dicas e comandos gcloud -->
+    <div style="margin-top: 20px; background: #f6faff; border-radius: 24px; padding: 14px 16px; border: 1px solid #e4edf8;">
+      <div style="display: flex; gap: 12px; flex-wrap: wrap; align-items: center; margin-bottom: 8px;">
+        <span style="font-weight: 600; color: #0c2f4a;">💡 Dica ACE</span>
+        <span style="background: #dae6f7; padding: 2px 14px; border-radius: 40px; font-size: 0.75rem; font-weight: 600;">gcloud CLI</span>
+        <span style="margin-left: auto; font-size: 0.8rem; color: #3a5b78;">Acertos: <span id="scoreDisplay">0</span>/<span id="totalCards">20</span></span>
+      </div>
+      <div id="gcloudTip" class="gcloud-tip">
+        <code>gcloud compute networks create</code> — comando para criar VPCs.
+      </div>
+      <div id="extraNote" style="margin-top: 8px; font-size: 0.9rem; color: #1f4970; background: #e3edfa; padding: 6px 14px; border-radius: 30px;">
+        📋 <strong>Dica para quem não tem experiência com outras nuvens:</strong> no GCP, a VPC é global e as sub-redes são regionais. Comece criando uma VPC customizada com sub-redes para entender o isolamento de rede.
+      </div>
+    </div>
+
+    <!-- Seção de Pontuação e Dicas de Estudo -->
+    <div class="score-section" id="scoreSection">
+      <div class="score-row">
+        <div>
+          <span class="score-label">✅ Pontuação total</span>
+          <span class="score-number" id="finalScore">0</span>
+          <span style="font-size:1.1rem; color:#0b2b4a;"> / <span id="finalTotal">20</span></span>
+        </div>
+        <button class="reset-score-btn" id="resetScoreBtn">🔄 Reiniciar</button>
+      </div>
+      <div class="study-tips">
+        <h4>📚 Módulos para revisar com base nos seus acertos:</h4>
+        <ul id="studyTipsList">
+          <li>Responda todas as perguntas para ver as recomendações.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <footer style="text-align:center;margin-top:40px;color:#777;">
+    Inglês Profissional • Preparação para Exames • Cambridge • IELTS • TOEFL • Duolingo English Test (DET)<br>
+    <span class="copyright">© English VClass • Edson D'Aguiar</span>
+    • Contato para Aulas: <a href="https://wa.me/5541991725009" target="_blank">• VClass English •</a>
+  </footer>
+</div>
+
+<script>
+  (function() {
+    // ----- FLASHCARDS - CAPÍTULO 14: VPC & VPN (baseado no PDF) -----
+    const flashcards = [
+      {
+        id: 1,
+        module: "VPC - Conceitos básicos",
+        pt: {
+          pergunta: "O que é uma VPC (Virtual Private Cloud) no Google Cloud?",
+          resposta: "Uma rede virtual global e isolada que contém recursos do GCP, com sub-redes regionais e regras de firewall.",
+          dica: "VPC é o equivalente lógico a uma rede física em um data center.",
+          exemplo: "Uma empresa de fintech cria uma VPC com sub-redes separadas para frontend, backend e banco de dados, garantindo isolamento e segurança."
+        },
+        en: {
+          pergunta: "What is a VPC (Virtual Private Cloud) in Google Cloud?",
+          resposta: "A global, isolated virtual network that contains GCP resources, with regional subnets and firewall rules.",
+          dica: "VPC is the logical equivalent of a physical network in a data center.",
+          exemplo: "A fintech company creates a VPC with separate subnets for frontend, backend, and database, ensuring isolation and security."
+        },
+        gcloud: "gcloud compute networks create my-vpc --subnet-mode=custom"
+      },
+      {
+        id: 2,
+        module: "VPC - Sub-redes",
+        pt: {
+          pergunta: "Como as sub-redes funcionam em uma VPC do Google Cloud?",
+          resposta: "Sub-redes são recursos regionais que definem um intervalo de IPs (CIDR) e permitem a comunicação entre recursos na mesma região.",
+          dica: "Cada sub-rede é associada a uma única região e não pode ser estendida para outras regiões.",
+          exemplo: "Uma empresa multinacional cria sub-redes em us-east1 para seus serviços na América do Norte e em europe-west1 para a Europa, todas dentro da mesma VPC."
+        },
+        en: {
+          pergunta: "How do subnets work in a Google Cloud VPC?",
+          resposta: "Subnets are regional resources that define an IP range (CIDR) and allow communication between resources in the same region.",
+          dica: "Each subnet is associated with a single region and cannot be extended to other regions.",
+          exemplo: "A multinational company creates subnets in us-east1 for North American services and in europe-west1 for Europe, all within the same VPC."
+        },
+        gcloud: "gcloud compute networks subnets create my-subnet --network=my-vpc --region=us-east1 --range=10.0.0.0/24"
+      },
+      {
+        id: 3,
+        module: "VPC - Modos de criação",
+        pt: {
+          pergunta: "Quais são os modos de criação de VPC no Google Cloud?",
+          resposta: "Auto mode (cria sub-redes automaticamente em todas as regiões) e Custom mode (o usuário define as sub-redes manualmente).",
+          dica: "Custom mode é recomendado para ambientes de produção.",
+          exemplo: "Uma empresa de consultoria usa Custom mode para criar apenas sub-redes nas regiões onde tem workloads, otimizando custos e segurança."
+        },
+        en: {
+          pergunta: "What are the VPC creation modes in Google Cloud?",
+          resposta: "Auto mode (automatically creates subnets in all regions) and Custom mode (user defines subnets manually).",
+          dica: "Custom mode is recommended for production environments.",
+          exemplo: "A consulting firm uses Custom mode to create subnets only in regions where they have workloads, optimizing costs and security."
+        },
+        gcloud: "gcloud compute networks create my-vpc --subnet-mode=custom"
+      },
+      {
+        id: 4,
+        module: "Firewall Rules - Estrutura",
+        pt: {
+          pergunta: "Quais são os componentes de uma regra de firewall no Google Cloud?",
+          resposta: "Direção (ingress/egress), prioridade (0-65535), ação (allow/deny), alvo (tags/sa), fonte/destino, protocolo e porta, e status de enforcement.",
+          dica: "Regras com prioridade mais baixa (0) têm maior precedência.",
+          exemplo: "Um administrador cria uma regra com prioridade 1000 para permitir SSH (porta 22) e outra com prioridade 500 para negar tráfego de IPs externos suspeitos."
+        },
+        en: {
+          pergunta: "What are the components of a firewall rule in Google Cloud?",
+          resposta: "Direction (ingress/egress), priority (0-65535), action (allow/deny), target (tags/sa), source/destination, protocol and port, and enforcement status.",
+          dica: "Lower priority numbers (0) have higher precedence.",
+          exemplo: "An admin creates a rule with priority 1000 to allow SSH (port 22) and another with priority 500 to deny traffic from suspicious external IPs."
+        },
+        gcloud: "gcloud compute firewall-rules create allow-ssh --allow=tcp:22 --priority=1000 --network=my-vpc"
+      },
+      {
+        id: 5,
+        module: "Firewall Rules - Implícitas",
+        pt: {
+          pergunta: "Quais são as regras de firewall implícitas em uma VPC?",
+          resposta: "Permitir tráfego de saída (egress) para qualquer destino (0.0.0.0/0) e negar tráfego de entrada (ingress) de qualquer origem, ambas com prioridade 65535.",
+          dica: "Essas regras não podem ser deletadas, mas podem ser sobrescritas com prioridades mais altas.",
+          exemplo: "Uma empresa cria uma regra com prioridade 1000 para permitir HTTP/HTTPS (portas 80/443) para o balanceador de carga, sobrescrevendo a regra implícita de negação."
+        },
+        en: {
+          pergunta: "What are the implied firewall rules in a VPC?",
+          resposta: "Allow egress traffic to any destination (0.0.0.0/0) and deny ingress traffic from any source, both with priority 65535.",
+          dica: "These rules cannot be deleted but can be overridden with higher priorities.",
+          exemplo: "A company creates a rule with priority 1000 to allow HTTP/HTTPS (ports 80/443) to the load balancer, overriding the implied deny rule."
+        },
+        gcloud: "gcloud compute firewall-rules create allow-http --allow=tcp:80,tcp:443 --priority=1000 --network=my-vpc"
+      },
+      {
+        id: 6,
+        module: "Firewall Rules - Stateful",
+        pt: {
+          pergunta: "O que significa que as regras de firewall no GCP são stateful?",
+          resposta: "Se uma conexão é permitida em uma direção, o tráfego de retorno é automaticamente permitido, mesmo que não haja uma regra explícita para a direção oposta.",
+          dica: "Isso simplifica a configuração, pois não é necessário criar regras de retorno.",
+          exemplo: "Um engenheiro permite SSH (porta 22) de entrada; a resposta SSH é automaticamente permitida, sem necessidade de regra de saída específica."
+        },
+        en: {
+          pergunta: "What does it mean that firewall rules in GCP are stateful?",
+          resposta: "If a connection is allowed in one direction, return traffic is automatically allowed, even without an explicit rule for the opposite direction.",
+          dica: "This simplifies configuration, as you don't need to create return rules.",
+          exemplo: "An engineer allows inbound SSH (port 22); the SSH response is automatically allowed, without a specific egress rule."
+        },
+        gcloud: "gcloud compute firewall-rules create allow-ssh --allow=tcp:22 --network=my-vpc"
+      },
+      {
+        id: 7,
+        module: "Shared VPC",
+        pt: {
+          pergunta: "O que é uma Shared VPC no Google Cloud?",
+          resposta: "Uma VPC compartilhada entre projetos em uma organização, permitindo que recursos de diferentes projetos se comuniquem na mesma rede.",
+          dica: "Permite centralizar a administração de rede e reduzir o número de VPCs.",
+          exemplo: "Uma grande corporação usa Shared VPC para que os projetos de desenvolvimento, teste e produção compartilhem a mesma rede, com políticas de firewall centralizadas."
+        },
+        en: {
+          pergunta: "What is a Shared VPC in Google Cloud?",
+          resposta: "A VPC shared across projects in an organization, allowing resources from different projects to communicate on the same network.",
+          dica: "Enables centralized network administration and reduces the number of VPCs.",
+          exemplo: "A large corporation uses Shared VPC so that dev, test, and production projects share the same network with centralized firewall policies."
+        },
+        gcloud: "gcloud compute shared-vpc enable HOST_PROJECT_ID"
+      },
+      {
+        id: 8,
+        module: "VPC Peering",
+        pt: {
+          pergunta: "O que é VPC Network Peering no Google Cloud?",
+          resposta: "Uma conexão entre duas VPCs (mesma ou diferentes organizações) que permite roteamento de tráfego privado entre elas, sem usar a internet.",
+          dica: "Não há gateway ou VPN; o peering é uma conexão direta entre as redes.",
+          exemplo: "Uma empresa adquire uma startup e usa VPC Peering para conectar as VPCs das duas empresas, permitindo comunicação segura entre os ambientes."
+        },
+        en: {
+          pergunta: "What is VPC Network Peering in Google Cloud?",
+          resposta: "A connection between two VPCs (same or different organizations) that allows private traffic routing between them, without using the internet.",
+          dica: "No gateway or VPN; peering is a direct connection between the networks.",
+          exemplo: "A company acquires a startup and uses VPC Peering to connect both companies' VPCs, enabling secure communication between environments."
+        },
+        gcloud: "gcloud compute networks peerings create peering-1 --network=vpc-a --peer-project=project-b --peer-network=vpc-b"
+      },
+      {
+        id: 9,
+        module: "VPN - Classic vs HA",
+        pt: {
+          pergunta: "Qual a diferença entre Classic VPN e HA VPN no Google Cloud?",
+          resposta: "Classic VPN suporta apenas IPv4 e tem SLA menor; HA VPN suporta IPv6, BGP e oferece alta disponibilidade com 99.99% SLA (usando dois túneis).",
+          dica: "HA VPN é recomendado para ambientes críticos.",
+          exemplo: "Um banco usa HA VPN com dois túneis para conectar sua rede on-premise ao GCP, garantindo failover automático em caso de falha de um túnel."
+        },
+        en: {
+          pergunta: "What is the difference between Classic VPN and HA VPN in Google Cloud?",
+          resposta: "Classic VPN supports only IPv4 and has lower SLA; HA VPN supports IPv6, BGP, and offers high availability with 99.99% SLA (using two tunnels).",
+          dica: "HA VPN is recommended for critical environments.",
+          exemplo: "A bank uses HA VPN with two tunnels to connect its on-premise network to GCP, ensuring automatic failover if one tunnel fails."
+        },
+        gcloud: "gcloud compute vpn-tunnels create tunnel1 --peer-address=35.xxx.xxx.xxx --shared-secret=secret --target-vpn-gateway=gateway1"
+      },
+      {
+        id: 10,
+        module: "VPN - Componentes",
+        pt: {
+          pergunta: "Quais são os componentes necessários para criar uma VPN no GCP?",
+          resposta: "Gateway VPN, regras de encaminhamento (forwarding rules) e túneis VPN (com peer address e shared secret).",
+          dica: "Para HA VPN, são criados dois túneis para redundância.",
+          exemplo: "Um administrador cria um gateway VPN, duas regras de encaminhamento e dois túneis para estabelecer uma conexão HA com o data center da empresa."
+        },
+        en: {
+          pergunta: "What components are needed to create a VPN in GCP?",
+          resposta: "VPN gateway, forwarding rules, and VPN tunnels (with peer address and shared secret).",
+          dica: "For HA VPN, two tunnels are created for redundancy.",
+          exemplo: "An admin creates a VPN gateway, two forwarding rules, and two tunnels to establish an HA connection with the company's data center."
+        },
+        gcloud: "gcloud compute target-vpn-gateways create gateway1 --network=my-vpc --region=us-east1"
+      },
+      {
+        id: 11,
+        module: "CIDR - Cálculo",
+        pt: {
+          pergunta: "Como funciona a notação CIDR (Classless Inter-Domain Routing)?",
+          resposta: "Define um bloco de IPs com um prefixo (ex: /24 = 256 IPs). Quanto menor o número após a barra, mais IPs disponíveis.",
+          dica: "/8 = 16 milhões de IPs, /16 = 65 mil, /24 = 256, /28 = 16 IPs.",
+          exemplo: "Uma empresa precisa de 500 IPs para uma sub-rede; usa o bloco 10.0.0.0/23 (512 IPs) para atender à demanda com folga."
+        },
+        en: {
+          pergunta: "How does CIDR (Classless Inter-Domain Routing) notation work?",
+          resposta: "Defines an IP block with a prefix (e.g., /24 = 256 IPs). The smaller the number after the slash, the more IPs available.",
+          dica: "/8 = 16 million IPs, /16 = 65k, /24 = 256, /28 = 16 IPs.",
+          exemplo: "A company needs 500 IPs for a subnet; it uses 10.0.0.0/23 (512 IPs) to meet demand with some buffer."
+        },
+        gcloud: "gcloud compute networks subnets create subnet1 --range=10.0.0.0/23 --region=us-east1"
+      },
+      {
+        id: 12,
+        module: "Rotas Dinâmicas",
+        pt: {
+          pergunta: "O que são rotas dinâmicas em uma VPC do Google Cloud?",
+          resposta: "Rotas aprendidas automaticamente pelo Cloud Router via BGP, permitindo que a VPC conheça redes on-premise ou de outras nuvens.",
+          dica: "Usado com HA VPN e Cloud Interconnect.",
+          exemplo: "Uma empresa com duas filiais usa Cloud Router com BGP para anunciar rotas das filiais para a VPC, permitindo comunicação entre todas as redes."
+        },
+        en: {
+          pergunta: "What are dynamic routes in a Google Cloud VPC?",
+          resposta: "Routes automatically learned by Cloud Router via BGP, allowing the VPC to know about on-premise or other cloud networks.",
+          dica: "Used with HA VPN and Cloud Interconnect.",
+          exemplo: "A company with two branches uses Cloud Router with BGP to advertise branch routes to the VPC, enabling communication across all networks."
+        },
+        gcloud: "gcloud compute routers create router1 --network=my-vpc --region=us-east1"
+      },
+      {
+        id: 13,
+        module: "Cloud Interconnect",
+        pt: {
+          pergunta: "O que é o Cloud Interconnect?",
+          resposta: "Serviço de conexão dedicada de alta velocidade entre a rede on-premise e o Google Cloud, com opções Dedicated e Partner Interconnect.",
+          dica: "Oferece maior largura de banda e menor latência que VPN.",
+          exemplo: "Uma empresa de streaming usa Dedicated Interconnect (10 Gbps) para transferir petabytes de dados entre seu data center e o Cloud Storage."
+        },
+        en: {
+          pergunta: "What is Cloud Interconnect?",
+          resposta: "High-speed dedicated connection service between on-premise network and Google Cloud, with Dedicated and Partner Interconnect options.",
+          dica: "Provides higher bandwidth and lower latency than VPN.",
+          exemplo: "A streaming company uses Dedicated Interconnect (10 Gbps) to transfer petabytes of data between its data center and Cloud Storage."
+        },
+        gcloud: "gcloud compute interconnects describe my-interconnect"
+      },
+      {
+        id: 14,
+        module: "Firewall - Tags vs Service Accounts",
+        pt: {
+          pergunta: "Como as regras de firewall podem ser aplicadas a instâncias específicas?",
+          resposta: "Usando network tags (aplicadas às VMs) ou service accounts (associadas às VMs). Ambos podem ser usados como alvo ou fonte.",
+          dica: "Tags são mais simples para grupos de VMs; service accounts oferecem controle mais granular.",
+          exemplo: "Um administrador aplica a tag 'web-server' a VMs com frontend e cria uma regra de firewall permitindo HTTP/HTTPS apenas para VMs com essa tag."
+        },
+        en: {
+          pergunta: "How can firewall rules be applied to specific instances?",
+          resposta: "Using network tags (applied to VMs) or service accounts (associated with VMs). Both can be used as target or source.",
+          dica: "Tags are simpler for VM groups; service accounts offer more granular control.",
+          exemplo: "An admin applies the 'web-server' tag to frontend VMs and creates a firewall rule allowing HTTP/HTTPS only for VMs with that tag."
+        },
+        gcloud: "gcloud compute firewall-rules create allow-web --allow=tcp:80,tcp:443 --target-tags=web-server --network=my-vpc"
+      },
+      {
+        id: 15,
+        module: "VPC - Privado vs Público",
+        pt: {
+          pergunta: "Como uma VPC pode ter acesso a serviços Google sem IP público?",
+          resposta: "Usando Private Google Access, que permite que VMs sem IP externo acessem APIs e serviços Google através da rede interna.",
+          dica: "É configurado por sub-rede e é gratuito.",
+          exemplo: "Uma empresa de analytics usa Private Google Access para que suas VMs (sem IP público) possam enviar dados para o BigQuery e Cloud Storage."
+        },
+        en: {
+          pergunta: "How can a VPC access Google services without public IPs?",
+          resposta: "Using Private Google Access, which allows VMs without external IPs to access Google APIs and services through the internal network.",
+          dica: "Configured per subnet and is free.",
+          exemplo: "An analytics company uses Private Google Access so its VMs (without public IPs) can send data to BigQuery and Cloud Storage."
+        },
+        gcloud: "gcloud compute networks subnets update my-subnet --region=us-east1 --enable-private-ip-google-access"
+      },
+      {
+        id: 16,
+        module: "DNS - Cloud DNS",
+        pt: {
+          pergunta: "Como o Cloud DNS pode ser usado com VPC?",
+          resposta: "Zonas privadas no Cloud DNS resolvem nomes internos apenas para recursos dentro da VPC, sem expor registros publicamente.",
+          dica: "Útil para nomes internos de serviços (ex: db.internal.company.com).",
+          exemplo: "Uma empresa cria uma zona privada 'internal.company.com' para resolver nomes de bancos de dados e serviços internos dentro da VPC."
+        },
+        en: {
+          pergunta: "How can Cloud DNS be used with VPC?",
+          resposta: "Private zones in Cloud DNS resolve internal names only for resources within the VPC, without exposing records publicly.",
+          dica: "Useful for internal service names (e.g., db.internal.company.com).",
+          exemplo: "A company creates a private zone 'internal.company.com' to resolve database and internal service names within the VPC."
+        },
+        gcloud: "gcloud dns managed-zones create internal-zone --dns-name=internal.company.com --visibility=private --networks=my-vpc"
+      },
+      {
+        id: 17,
+        module: "Logging de Rede",
+        pt: {
+          pergunta: "O que é Flow Logs em sub-redes do GCP?",
+          resposta: "Um recurso que registra informações sobre o tráfego de rede (origem, destino, porta, protocolo) em uma sub-rede, enviando para o Cloud Logging.",
+          dica: "Ajuda na análise de segurança e troubleshooting.",
+          exemplo: "Uma equipe de segurança ativa Flow Logs em uma sub-rede para auditar conexões suspeitas e identificar possíveis tentativas de ataque."
+        },
+        en: {
+          pergunta: "What are Flow Logs in GCP subnets?",
+          resposta: "A feature that records network traffic information (source, destination, port, protocol) in a subnet, sending it to Cloud Logging.",
+          dica: "Helps with security analysis and troubleshooting.",
+          exemplo: "A security team enables Flow Logs on a subnet to audit suspicious connections and identify potential attack attempts."
+        },
+        gcloud: "gcloud compute networks subnets update my-subnet --region=us-east1 --enable-flow-logs"
+      },
+      {
+        id: 18,
+        module: "VPC - Expansão de Sub-rede",
+        pt: {
+          pergunta: "Como expandir o número de IPs em uma sub-rede existente?",
+          resposta: "Usando o comando `gcloud compute networks subnets expand-ip-range`, que aumenta o prefixo (ex: /24 para /23). Não é possível reduzir.",
+          dica: "O prefixo deve ser menor (menos bits) para adicionar mais IPs.",
+          exemplo: "Uma sub-rede com /24 (256 IPs) ficou sem endereços; o administrador expande para /23 (512 IPs) usando expand-ip-range."
+        },
+        en: {
+          pergunta: "How to expand the number of IPs in an existing subnet?",
+          resposta: "Using the command `gcloud compute networks subnets expand-ip-range`, which increases the prefix (e.g., /24 to /23). Cannot reduce.",
+          dica: "The prefix must be smaller (fewer bits) to add more IPs.",
+          exemplo: "A subnet with /24 (256 IPs) ran out of addresses; the admin expands to /23 (512 IPs) using expand-ip-range."
+        },
+        gcloud: "gcloud compute networks subnets expand-ip-range my-subnet --prefix-length=23"
+      },
+      {
+        id: 19,
+        module: "Firewall - Prioridade",
+        pt: {
+          pergunta: "Como funciona a prioridade de regras de firewall?",
+          resposta: "A prioridade determina qual regra é aplicada quando múltiplas regras correspondem. Quanto menor o número, maior a prioridade (0 é a mais alta).",
+          dica: "Regras com prioridade mais baixa são avaliadas primeiro.",
+          exemplo: "Um administrador cria uma regra de negação com prioridade 500 para bloquear IPs maliciosos e uma regra de permissão com prioridade 1000 para permitir tráfego legítimo."
+        },
+        en: {
+          pergunta: "How does firewall rule priority work?",
+          resposta: "Priority determines which rule is applied when multiple rules match. Lower numbers have higher priority (0 is highest).",
+          dica: "Lower priority rules are evaluated first.",
+          exemplo: "An admin creates a deny rule with priority 500 to block malicious IPs and an allow rule with priority 1000 for legitimate traffic."
+        },
+        gcloud: "gcloud compute firewall-rules create deny-malicious --deny=tcp --priority=500 --source-ranges=1.2.3.4/32"
+      },
+      {
+        id: 20,
+        module: "VPC - Cloud Router",
+        pt: {
+          pergunta: "Qual o papel do Cloud Router em uma VPC?",
+          resposta: "O Cloud Router é um serviço que permite roteamento dinâmico (BGP) entre a VPC e redes externas, como on-premise ou outras nuvens.",
+          dica: "É essencial para HA VPN e Interconnect.",
+          exemplo: "Uma empresa com múltiplos data centers usa Cloud Router para anunciar e aprender rotas dinamicamente, garantindo failover automático entre conexões."
+        },
+        en: {
+          pergunta: "What is the role of Cloud Router in a VPC?",
+          resposta: "Cloud Router is a service that enables dynamic routing (BGP) between the VPC and external networks, such as on-premise or other clouds.",
+          dica: "Essential for HA VPN and Interconnect.",
+          exemplo: "A company with multiple data centers uses Cloud Router to dynamically advertise and learn routes, ensuring automatic failover between connections."
+        },
+        gcloud: "gcloud compute routers create my-router --network=my-vpc --region=us-east1"
+      }
+    ];
+
+    // ----- Estado -----
+    let currentIndex = 0;
+    let currentLang = 'pt';
+    const total = flashcards.length;
+    let answerVisible = false;
+    let score = 0;
+    let answeredCards = new Array(total).fill(false);
+
+    // DOM elements
+    const questionEl = document.getElementById('questionText');
+    const answerEl = document.getElementById('answerText');
+    const extraContent = document.getElementById('extraContent');
+    const gcloudTipEl = document.getElementById('gcloudTip');
+    const extraNoteEl = document.getElementById('extraNote');
+    const counterEl = document.getElementById('counter');
+    const progressFill = document.getElementById('progressFill');
+    const showAnswerBtn = document.getElementById('showAnswerBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const prevBtn = document.getElementById('prevBtn');
+    const langPt = document.getElementById('langPt');
+    const langEn = document.getElementById('langEn');
+    const scoreDisplay = document.getElementById('scoreDisplay');
+    const totalCardsSpan = document.getElementById('totalCards');
+    const scoreSection = document.getElementById('scoreSection');
+    const finalScoreSpan = document.getElementById('finalScore');
+    const finalTotalSpan = document.getElementById('finalTotal');
+    const studyTipsList = document.getElementById('studyTipsList');
+    const resetScoreBtn = document.getElementById('resetScoreBtn');
+
+    totalCardsSpan.textContent = total;
+    finalTotalSpan.textContent = total;
+
+    function updateScoreAndTips() {
+      let correctCount = 0;
+      for (let i = 0; i < total; i++) {
+        if (answeredCards[i]) correctCount++;
+      }
+      score = correctCount;
+      scoreDisplay.textContent = score;
+
+      const allAnswered = answeredCards.every(v => v === true);
+      if (allAnswered) {
+        scoreSection.classList.add('visible');
+        finalScoreSpan.textContent = score;
+
+        const wrongModules = [];
+        for (let i = 0; i < total; i++) {
+          if (!answeredCards[i]) {
+            const moduleName = flashcards[i].module;
+            if (!wrongModules.includes(moduleName)) {
+              wrongModules.push(moduleName);
+            }
+          }
+        }
+
+        if (wrongModules.length === 0) {
+          studyTipsList.innerHTML = `<li>🎉 Parabéns! Você acertou todas as questões sobre VPC e VPN!</li>
+                                     <li>🔧 Pratique os comandos gcloud no Cloud Shell para fixar.</li>
+                                     <li>📌 Revise os conceitos de CIDR e firewall rules para a prova.</li>`;
+        } else {
+          let tipsHtml = '';
+          wrongModules.forEach(mod => {
+            tipsHtml += `<li><strong>${mod}</strong> — Reveja os conceitos e pratique os comandos relacionados.</li>`;
+          });
+          tipsHtml += `<li>💡 Foque nos módulos acima e refaça os flashcards correspondentes.</li>`;
+          studyTipsList.innerHTML = tipsHtml;
+        }
+      } else {
+        scoreSection.classList.remove('visible');
+      }
+    }
+
+    function markAsCorrect() {
+      if (!answeredCards[currentIndex]) {
+        answeredCards[currentIndex] = true;
+        updateScoreAndTips();
+      }
+    }
+
+    function renderCard() {
+      const card = flashcards[currentIndex];
+      const langData = card[currentLang];
+      if (!langData) return;
+
+      questionEl.textContent = langData.pergunta;
+      answerEl.textContent = langData.resposta;
+      answerEl.style.display = answerVisible ? 'block' : 'none';
+
+      let tipHtml = `<div class="card-tip">💡 ${langData.dica}</div>`;
+      let exemploHtml = `<div class="real-world-example"><strong>📌 Exemplo real:</strong> ${langData.exemplo}</div>`;
+      extraContent.innerHTML = tipHtml + exemploHtml;
+
+      gcloudTipEl.innerHTML = `<code>${card.gcloud}</code> — comando prático para este tópico.`;
+
+      counterEl.textContent = `${currentIndex+1} / ${total}`;
+      progressFill.style.width = `${((currentIndex+1)/total)*100}%`;
+
+      extraNoteEl.innerHTML = `📋 <strong>Dica para quem não tem experiência com outras nuvens:</strong> no GCP, a VPC é global e as sub-redes são regionais. Comece criando uma VPC customizada com sub-redes para entender o isolamento de rede.`;
+
+      updateScoreAndTips();
+    }
+
+    function setLanguage(lang) {
+      currentLang = lang;
+      if (lang === 'pt') {
+        langPt.classList.add('active');
+        langEn.classList.remove('active');
+      } else {
+        langEn.classList.add('active');
+        langPt.classList.remove('active');
+      }
+      answerVisible = false;
+      renderCard();
+    }
+
+    function showAnswer() {
+      answerVisible = !answerVisible;
+      renderCard();
+      if (answerVisible) {
+        markAsCorrect();
+      }
+    }
+
+    function nextCard() {
+      if (currentIndex < total - 1) {
+        currentIndex++;
+        answerVisible = false;
+        renderCard();
+      }
+    }
+
+    function prevCard() {
+      if (currentIndex > 0) {
+        currentIndex--;
+        answerVisible = false;
+        renderCard();
+      }
+    }
+
+    function resetScore() {
+      answeredCards = new Array(total).fill(false);
+      score = 0;
+      scoreSection.classList.remove('visible');
+      updateScoreAndTips();
+      renderCard();
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight') nextCard();
+      else if (e.key === 'ArrowLeft') prevCard();
+      else if (e.key === ' ' || e.key === 'Enter') {
+        e.preventDefault();
+        showAnswer();
+      }
+    });
+
+    renderCard();
+    updateScoreAndTips();
+
+    showAnswerBtn.addEventListener('click', showAnswer);
+    nextBtn.addEventListener('click', nextCard);
+    prevBtn.addEventListener('click', prevCard);
+    langPt.addEventListener('click', () => setLanguage('pt'));
+    langEn.addEventListener('click', () => setLanguage('en'));
+    resetScoreBtn.addEventListener('click', resetScore);
+
+    console.log('ACE Flashcards - Capítulo 14: VPC & VPN');
+  })();
+</script>
+</body>
+</html>
